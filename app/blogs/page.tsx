@@ -1,10 +1,25 @@
-// import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
+import { getBlogs } from "../services/getBlog";
+import { cacheLife, cacheTag } from "next/cache";
 
-// const BlogPage = async () => {
-//   const data = await fetch("https://jsonplaceholder.typicode.com/posts");
-//   const res = await data.json();
-//   console.log("res", res);
-//   return <div>Pafw</div>;
-// };
+const BlogPage = async () => {
+  //   "use cache";
+  //   cacheLife("hours");
+  cacheTag("po");
 
-// export default BlogPage;
+  const blogData = await getBlogs();
+
+  console.log("blogData", blogData);
+  return (
+    <div>
+      {blogData.map((b: any) => (
+        <div key={b.id}>
+          <p>{b.title}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default BlogPage;
