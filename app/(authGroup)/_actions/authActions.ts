@@ -1,5 +1,7 @@
 "use server";
 
+import { cookies } from "next/headers";
+
 type LoginState = {
   success: boolean;
   message: string;
@@ -27,7 +29,23 @@ export const loginAction = async (
     },
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data: LoginState = await res.json();
+
+  if (data.success) {
+    const cookie = await cookies();
+
+    cookie.set("accessToken", data.data.accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24,
+      sameSite: "lax",
+    });
+
+    cookie.set("refreshToken", data.data.refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
+    });
+  }
 
   return data;
 };
