@@ -6,7 +6,7 @@ import { cacheLife, cacheTag } from "next/cache";
 const BlogPage = async () => {
   //   "use cache";
   //   cacheLife("hours");
-  cacheTag("po");
+  //   cacheTag("posts");
 
   const blogData = await getBlogs();
 
