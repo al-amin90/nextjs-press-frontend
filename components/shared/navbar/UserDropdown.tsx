@@ -12,13 +12,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOut, Settings, User } from "lucide-react";
+import { NavProps } from "../Navbar";
 
 const userMenuItems = [
   { label: "Profile", icon: User, action: "profile" },
   { label: "Settings", icon: Settings, action: "settings" },
 ];
 
-export function UserDropdown() {
+export function UserDropdown({ user }: NavProps) {
+  console.log("user", user);
+
   const handleMenuAction = (action: string) => {
     console.log("Menu action:", action);
     // Add your logic here
@@ -39,9 +42,11 @@ export function UserDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-foreground">John Doe</span>
+          <span className="text-sm font-medium text-foreground">
+            {user.data.name}
+          </span>
           <span className="text-xs text-muted-foreground">
-            john@example.com
+            {user.data.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

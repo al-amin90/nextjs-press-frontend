@@ -3,7 +3,33 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { UserDropdown } from "./navbar/UserDropdown";
 
-export function Navbar() {
+type IUser = {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    createdAt: string;
+    updatedAt: string;
+    profile: {
+      id: string;
+      profilePhoto: string;
+      bio: string | null;
+      userId: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
+
+export type NavProps = {
+  user: IUser;
+};
+
+export function Navbar({ user }: NavProps) {
   const links = [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
@@ -40,7 +66,7 @@ export function Navbar() {
         </div>
 
         {/* User Dropdown */}
-        <UserDropdown />
+        <UserDropdown user={user} />
       </nav>
     </header>
   );
