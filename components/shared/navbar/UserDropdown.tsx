@@ -25,27 +25,15 @@ const userMenuItems = [
 ];
 
 export function UserDropdown({ user }: NavProps) {
-  const [isLogout, setIsLogout] = useState(false);
   const router = useRouter();
-  console.log("user", user);
 
   const handleMenuAction = async (action: string) => {
-    console.log("Menu action:", action);
-    // Add your logic here
-
     if (action === "logout") {
       await logout();
-      setIsLogout(false);
       toast.success("Logout Successfully");
       router.push("/login");
     }
   };
-
-  useEffect(() => {
-    if (isLogout) {
-      // toast.success("Logout Successfully");
-    }
-  }, [isLogout]);
 
   return (
     <DropdownMenu>

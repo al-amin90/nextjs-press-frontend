@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { UserDropdown } from "./navbar/UserDropdown";
+import { Button } from "../ui/button";
 
 type IUser = {
   success: boolean;
@@ -66,7 +67,13 @@ export function Navbar({ user }: NavProps) {
         </div>
 
         {/* User Dropdown */}
-        <UserDropdown user={user} />
+        {user.success ? (
+          <UserDropdown user={user} />
+        ) : (
+          <Link href="/login">
+            <Button className="cursor-pointer">Login</Button>
+          </Link>
+        )}
       </nav>
     </header>
   );
