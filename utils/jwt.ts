@@ -6,7 +6,7 @@ const verifyToken = (token: string, secret: string) => {
     const verifiedToken = jwt.verify(token, secret);
 
     return {
-      success: false,
+      success: true,
       data: verifiedToken,
     };
   } catch (error: any) {

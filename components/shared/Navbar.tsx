@@ -39,6 +39,7 @@ export function Navbar({ user }: NavProps) {
     { label: "Contact", href: "/contact" },
   ];
 
+  console.log("user", user);
   return (
     <header className="border-b border-border bg-background">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">

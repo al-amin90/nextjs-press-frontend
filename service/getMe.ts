@@ -15,24 +15,21 @@ export const getMe = async () => {
     };
   }
 
-  const res = await fetch(
-    `https://prisma-press-backend-indol.vercel.app/api/users/me`,
-    {
-      method: "POST",
-      headers: {
-        //   Authorization: `${accessToken}`,
-        //   Authorization: accessToken as unknown as string,
-        Authorization: `Bearer ${accessToken}`,
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
+    method: "POST",
+    headers: {
+      //   Authorization: `${accessToken}`,
+      //   Authorization: accessToken as unknown as string,
+      Authorization: `Bearer ${accessToken}`,
 
-        Cookie: `accessToken=${accessToken}`,
-      },
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 * 24,
-        tags: ["my-profile"],
-      },
+      Cookie: `accessToken=${accessToken}`,
     },
-  );
+    cache: "force-cache",
+    next: {
+      revalidate: 60 * 60 * 24,
+      tags: ["my-profile"],
+    },
+  });
 
   const data = await res.json();
 
