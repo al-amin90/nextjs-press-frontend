@@ -12,7 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOut, Settings, User } from "lucide-react";
+
+import { logout } from "@/service/logout";
 import { NavProps } from "../Navbar";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const userMenuItems = [
   { label: "Profile", icon: User, action: "profile" },
@@ -20,12 +25,27 @@ const userMenuItems = [
 ];
 
 export function UserDropdown({ user }: NavProps) {
+  const [isLogout, setIsLogout] = useState(false);
+  const router = useRouter();
   console.log("user", user);
 
-  const handleMenuAction = (action: string) => {
+  const handleMenuAction = async (action: string) => {
     console.log("Menu action:", action);
     // Add your logic here
+
+    if (action === "logout") {
+      await logout();
+      setIsLogout(false);
+      toast.success("Logout Successfully");
+      router.push("/login");
+    }
   };
+
+  useEffect(() => {
+    if (isLogout) {
+      // toast.success("Logout Successfully");
+    }
+  }, [isLogout]);
 
   return (
     <DropdownMenu>
@@ -43,10 +63,10 @@ export function UserDropdown({ user }: NavProps) {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-1">
           <span className="text-sm font-medium text-foreground">
-            {user.data.name}
+            {user?.data?.name}
           </span>
           <span className="text-xs text-muted-foreground">
-            {user.data.email}
+            {user?.data?.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
