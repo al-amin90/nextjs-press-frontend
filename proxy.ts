@@ -6,6 +6,7 @@ import { jwtUtils } from "./utils/jwt";
 import { getNewAccessToken } from "./service/refreshToken";
 
 const AUTH_ROUTES = ["/login", "/register"];
+// const PUBLIC_ROUTES = ["/", "/news", "/login", "/register"]
 const PUBLIC_ROUTES = ["/", "news"];
 
 // This function can be marked `async` if using `await` inside
@@ -23,6 +24,7 @@ export async function proxy(request: NextRequest) {
   let decodedAccessToken = accessToken
     ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_TOKEN as string)
     : null;
+
   const decodedRefreshToken = refreshToken
     ? jwtUtils.verifyToken(
         refreshToken,
@@ -31,12 +33,11 @@ export async function proxy(request: NextRequest) {
     : null;
 
   if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
-    console.log("hitttttttttttttttt");
     const result = await getNewAccessToken();
-    console.log("result", result);
-    const newAccessToken = result.data.accessToken;
 
     if (result.success) {
+      const newAccessToken = result.data.accessToken;
+
       cookieStore.set("accessToken", newAccessToken, {
         httpOnly: true,
         maxAge: 60 * 60 * 24,
@@ -44,16 +45,13 @@ export async function proxy(request: NextRequest) {
       });
 
       accessToken = newAccessToken;
-      decodedAccessToken = accessToken
-        ? jwtUtils.verifyToken(
-            accessToken,
-            process.env.JWT_ACCESS_TOKEN as string,
-          )
-        : null;
+      decodedAccessToken = jwtUtils.verifyToken(
+        accessToken!,
+        process.env.JWT_ACCESS_TOKEN as string,
+      );
     }
   }
 
-  console.log("decodedAccessToken", decodedAccessToken);
   if (!decodedAccessToken?.success) {
     // token has expired
     cookieStore.delete("accessToken");
@@ -64,8 +62,6 @@ export async function proxy(request: NextRequest) {
   if (decodedAccessToken?.success && decodedAccessToken.data) {
     userRole = (decodedAccessToken.data as JwtPayload).role;
   }
-
-  console.log("userRole", userRole);
 
   if (accessToken && AUTH_ROUTES.includes(pathName)) {
     if (userRole === "USER") {
@@ -91,14 +87,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  //   authorization
+  // Authorization : Role based access control
   if (pathName.startsWith("/dashboard") && userRole !== "USER") {
     return NextResponse.redirect(new URL("/not-found", request.url));
-  } else if (pathName.startsWith("/admin-dashboard") && userRole === "ADMIN") {
+  } else if (pathName.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
     return NextResponse.redirect(new URL("/not-found", request.url));
   } else if (
     pathName.startsWith("/author-dashboard") &&
-    userRole === "AUTHOR"
+    userRole !== "AUTHOR"
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
@@ -116,6 +112,6 @@ export const config = {
     "/dashboard/:path*",
     "/admin-dashboard/:path*",
     "/author-dashboard/:path*",
-    // "/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)",
+    //  '/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)'
   ],
 };
