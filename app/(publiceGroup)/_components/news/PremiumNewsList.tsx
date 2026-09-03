@@ -1,5 +1,6 @@
 import { IPost } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
+import { getPremiumNews } from "../../_actions/getPremiumNews";
 
 export async function PremiumNewsList({
   searchParams,
@@ -7,26 +8,7 @@ export async function PremiumNewsList({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  //   const result = await getPremiumNews({ query });
-  const result = {
-    success: true,
-    data: [
-      {
-        id: "1",
-        title: "Public News 1",
-        content: "This is the content of public news 1.",
-        thumbnail: "https://via.placeholder.com/150",
-        isFeatured: true,
-        status: "PUBLISHED",
-        tags: ["tag1", "tag2"],
-        views: 100,
-        isPremium: false,
-        authorId: "1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
-  };
+  const result = await getPremiumNews();
 
   if (!result.success || !result.data?.length) {
     return (
@@ -39,7 +21,7 @@ export async function PremiumNewsList({
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {result.data.map((post: IPost | any) => (
+        {result.data.map((post: IPost) => (
           <NewsCard key={post.id} post={post} />
         ))}
       </div>
